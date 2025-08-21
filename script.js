@@ -107,9 +107,12 @@ function initializeEventListeners() {
 
     // 모달 닫기 버튼들
     document.querySelectorAll('.close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function() {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             const modal = this.closest('.modal');
-            closeModal(modal.id);
+            if (modal) {
+                closeModal(modal.id);
+            }
         });
     });
 
@@ -120,6 +123,18 @@ function initializeEventListeners() {
                 closeModal(this.id);
             }
         });
+    });
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModals = document.querySelectorAll('.modal[style*="display: block"]');
+            openModals.forEach(modal => {
+                if (modal.id !== 'orderFormModal') {
+                    closeModal(modal.id);
+                }
+            });
+        }
     });
 }
 
