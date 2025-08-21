@@ -105,15 +105,22 @@ function initializeEventListeners() {
         confirmPayment();
     });
 
-    // 모달 닫기 버튼들
-    document.querySelectorAll('.close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function(e) {
+    // 모달 닫기 버튼들 (이벤트 위임 방식)
+    document.addEventListener('click', function(e) {
+        console.log('클릭된 요소:', e.target);
+        console.log('클래스 목록:', e.target.classList);
+        
+        if (e.target.classList.contains('close')) {
+            console.log('닫기 버튼 클릭됨');
             e.preventDefault();
-            const modal = this.closest('.modal');
+            e.stopPropagation();
+            const modal = e.target.closest('.modal');
+            console.log('찾은 모달:', modal);
             if (modal) {
+                console.log('모달 ID:', modal.id);
                 closeModal(modal.id);
             }
-        });
+        }
     });
 
     // 모달 외부 클릭 시 닫기 (주문 폼 모달 제외)
@@ -250,8 +257,15 @@ function openModal(modalId) {
 
 // 모달 닫기
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-    document.body.style.overflow = 'auto';
+    console.log('closeModal 호출됨:', modalId);
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        console.log('모달 닫기 완료:', modalId);
+    } else {
+        console.error('모달을 찾을 수 없음:', modalId);
+    }
 }
 
 // 클립보드에 복사
